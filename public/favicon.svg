@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="dmm-seli">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5ead7" />
+      <stop offset="100%" stop-color="#cb623a" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)" />
+  <path
+    d="M36 86V42h11.8c8.9 0 14.1 4.8 14.1 13.8 0 4.5-1.5 8.1-4.3 10.8-2.9 2.7-6.8 4-11.8 4h-2.7V86H36zm8.9-22.5h2.3c3.6 0 5.7-2.4 5.7-6.7 0-4.2-2.1-6.6-5.7-6.6h-2.3v13.3zm27.2 22.5V42h8l8.1 20.7L96.2 42h8V86h-8.2V61.6L89 79.1h-1.7l-6.8-17.5V86h-8.4z"
+    fill="#241510"
+  />
+</svg>

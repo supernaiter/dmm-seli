@@ -1,0 +1,15 @@
+project: dmm-seli
+updated: 2026-04-15
+
+goal: DMM.com 電子書籍専門の別サービスを Cloudflare Pages 向けに実装
+
+[STATUS]
+- workspace: /Volumes/lyssr_workspace/2025_2/dmm-seli
+- repo: local_initialized
+- stack: React + Vite + TypeScript + Cloudflare Pages
+- catalog: DMM.com ebook comic/novel/otherbooks/photo
+- data_mode: static_json_generated_at_build
+- refresh: github_actions_hourly
+- pages: `/` `/works` `/works/:workId`
+- api_runtime: none
+- notes: no mock/no placeholder/no fake timer/rating/history
