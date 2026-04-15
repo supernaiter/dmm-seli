@@ -13,5 +13,18 @@ for (const filePath of candidateFiles) {
 }
 
 export function getEnv(name: string, aliases: string[] = []) {
-  return [name, ...aliases].map((key) => process.env[key]).find(Boolean) ?? null
+  const rawValue = [name, ...aliases].map((key) => process.env[key]).find(Boolean)
+  if (!rawValue) {
+    return null
+  }
+
+  const trimmed = rawValue.trim()
+  if (
+    (trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1).trim()
+  }
+
+  return trimmed
 }
