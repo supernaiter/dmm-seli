@@ -5,13 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "data:generate": "tsx scripts/generate-data.ts",
+    "migrate": "tsx scripts/migrate.ts",
+    "collect:history": "tsx scripts/collect-history.ts",
     "test:live": "tsx scripts/live-smoke.ts",
-    "build": "npm run data:generate && tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:pages": "node scripts/preview-pages.mjs"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "framer-motion": "^12.38.0",
@@ -20,6 +23,7 @@
     "react-router-dom": "^7.14.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260415.1",
     "@eslint/js": "^9.39.4",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",

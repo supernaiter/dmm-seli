@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+.dev.vars
+.neon
+.wrangler
 public/data
 
 # Editor directories and files

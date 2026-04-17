@@ -1,5 +1,5 @@
 export function formatYen(value: number | null): string {
-  if (value == null) return "価格情報なし"
+  if (value == null) return "—"
   return new Intl.NumberFormat("ja-JP", {
     style: "currency",
     currency: "JPY",
@@ -8,16 +8,17 @@ export function formatYen(value: number | null): string {
 }
 
 export function formatPointRate(rate: number | null): string {
-  if (rate == null || rate <= 0) return "ポイントなし"
+  if (rate == null || rate <= 0) return "—"
   return `${Math.round(rate * 100)}%還元`
 }
 
 export function formatDiscount(rate: number | null): string {
-  if (rate == null || rate <= 0) return "判定不可"
+  if (rate == null || rate <= 0) return "—"
   return `${Math.round(rate * 100)}%OFF`
 }
 
-export function formatUpdatedAt(value: string): string {
+export function formatUpdatedAt(value: string | null): string {
+  if (!value) return "未取得"
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) return value
   return new Intl.DateTimeFormat("ja-JP", {

@@ -1,34 +1,56 @@
 # dmm-seli
 
-DMM.com の電子書籍だけを扱う、Cloudflare Pages 向けの静的サイトです。
+DMM.com の電子書籍 4 フロアを、キンセリ寄りの密度感で追う価格トラッカーです。
 
-## 概要
+## このリポジトリの扱い
 
-- 対象: `DMM.com / ebook / comic, novel, otherbooks, photo`
-- 形式: React + Vite + TypeScript の SPA
-- データ: DMM アフィリエイト API から毎時ライブ取得し、静的 JSON を生成
+- `dmm-seli` は `av-hunt` と別プロジェクトです
+- 環境変数、DB、Cloudflare Pages、GitHub Actions は `dmm-seli` 専用で持ちます
+- 兄弟リポジトリの `.env` や状態ファイルは読みません
+
+## 構成
+
 - 配信: Cloudflare Pages
-- 特徴: キンセリ系の密度感を残しつつ、DMM 電子書籍だけを別サービスで扱う
+- API: Cloudflare Pages Functions
+- DB: Postgres / Neon (`DATABASE_URL`)
+- 収集: GitHub Actions の hourly collector
+- 対象: `DMM.com / ebook / comic, novel, otherbooks, photo`
+
+## セットアップ
+
+```bash
+cp .env.example .env.local
+npm install
+npm run test:live
+npm run migrate
+npm run collect:history
+npm run build
+```
 
 ## 主要コマンド
 
 ```bash
-npm install
-npm run test:live
-npm run build
 npm run dev
+npm run build
+npm run preview:pages
 ```
+
+- `npm run dev`: フロントだけを確認
+- `npm run preview:pages`: Cloudflare Pages Functions を含めて `http://127.0.0.1:4310` で確認
+
+詳しい運用手順:
+
+- [docs/standalone-ops.md](/Volumes/lyssr_workspace/2025_2/dmm-seli/docs/standalone-ops.md)
 
 ## 必要な環境変数
 
-どちらの名前でも動きます。
-
 ```bash
 DMM_API_ID=
-DMM_AFFILIATE_ID=
+DMM_AFFILIATE_ID=dmmseli-990
+DATABASE_URL=
 ```
 
-または
+旧名でも動きます。
 
 ```bash
 api_id=
@@ -37,21 +59,27 @@ affiliate_ID_header=
 
 `affiliate_id` は末尾が `-990..-999` でない場合、自動で `-990` を補います。
 
-## 生成される公開データ
+## API
 
-- `public/data/top.json`
-- `public/data/works-index.json`
-- `public/data/works/<encoded-work-id>.json`
+- `GET /api/healthz`
+- `GET /api/floors`
+- `GET /api/products`
+- `GET /api/products/:workId`
 
-これらはビルド時に毎回生成され、Git 管理には含めません。
+## GitHub Actions secrets
 
-## Cloudflare Pages / GitHub Actions
-
-workflow で必要な secret:
+deploy:
 
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
+
+collector:
+
 - `DMM_API_ID`
 - `DMM_AFFILIATE_ID`
+- `DATABASE_URL`
 
-deploy workflow は `main` push / 手動実行 / 毎時スケジュールで動く前提です。
+Pages Functions runtime:
+
+- Cloudflare Pages project 側に `DATABASE_URL` secret を設定する
+- GitHub secrets に `DATABASE_URL` が入っていても、Pages project 側に同じ値が別途必要です

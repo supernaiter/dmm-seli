@@ -47,7 +47,22 @@ export function buildItemListUrl(input: {
 }
 
 async function fetchJson(url: URL, attempt = 0): Promise<unknown> {
-  const response = await fetch(url)
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 20_000)
+  let response: Response
+
+  try {
+    response = await fetch(url, { signal: controller.signal })
+  } catch (error) {
+    clearTimeout(timeoutId)
+    if (attempt < 2) {
+      await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)))
+      return fetchJson(url, attempt + 1)
+    }
+    throw error
+  }
+
+  clearTimeout(timeoutId)
   if (!response.ok) {
     if (response.status >= 500 && attempt < 2) {
       await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)))
@@ -160,7 +175,7 @@ export function normalizeItem(input: {
   sort: SortSource
   index: number
   fetchedAt: string
-}): CatalogWork | null {
+}): (CatalogWork & { releaseDate: string | null }) | null {
   const contentId = textFromUnknown(input.item.content_id) ?? textFromUnknown(input.item.product_id)
   if (!contentId) return null
 
@@ -190,16 +205,17 @@ export function normalizeItem(input: {
     imageUrl: pickImageUrl(input.item),
     affiliateUrl: textFromUnknown(input.item.affiliateURL) ?? textFromUnknown(input.item.URL),
     tachiyomiUrl: textFromUnknown(tachiyomi.affiliateURL) ?? textFromUnknown(tachiyomi.URL),
-    currentPrice: priceFields.currentPrice,
+    latestPrice: priceFields.currentPrice,
     listPrice: priceFields.listPrice,
     pointRate: priceFields.pointRate,
     effectivePrice: priceFields.effectivePrice,
     discountPct: priceFields.discountPct,
     isOnSale: priceFields.isOnSale,
-    sortSource: [input.sort],
+    badge: null,
+    pastLowest: null,
     rankOrder: input.sort === "rank" ? input.index : null,
     dateOrder: input.sort === "date" ? input.index : null,
     releaseDate: textFromUnknown(input.item.date),
-    fetchedAt: input.fetchedAt,
+    lastCapturedAt: null,
   }
 }

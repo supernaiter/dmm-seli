@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: "0 * * * *"
 
 jobs:
   build-and-deploy:
@@ -24,13 +22,10 @@ jobs:
       - run: npm ci
 
       - run: npm run build
-        env:
-          DMM_API_ID: ${{ secrets.DMM_API_ID }}
-          DMM_AFFILIATE_ID: ${{ secrets.DMM_AFFILIATE_ID }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name dmm-seli
+          command: pages deploy dist --project-name dmm-seli --branch main

@@ -1,15 +1,28 @@
 project: dmm-seli
-updated: 2026-04-15
+updated: 2026-04-17
 
-goal: DMM.com 電子書籍専門の別サービスを Cloudflare Pages 向けに実装
+goal: DMM.com 電子書籍価格トラッカーを Pages Functions + Neon Postgres + hourly collector で実装
 
 [STATUS]
 - workspace: /Volumes/lyssr_workspace/2025_2/dmm-seli
 - repo: local_initialized
-- stack: React + Vite + TypeScript + Cloudflare Pages
+- stack: React + Vite + TypeScript + Cloudflare Pages + Pages Functions + Neon
+- workspace_mode: standalone
+- env_mode: local_only
+- docs_mode: standalone_ops_documented
+- local_preview: `npm run preview:pages`
+- neon_project: solitary-truth-19033362
+- neon_region: aws-ap-southeast-1
 - catalog: DMM.com ebook comic/novel/otherbooks/photo
-- data_mode: static_json_generated_at_build
-- refresh: github_actions_hourly
-- pages: `/` `/works` `/works/:workId`
-- api_runtime: none
+- data_mode: api_runtime + postgres_history
+- refresh: github_actions_hourly_collector
+- pages: `/` = tracker, `/works` = alias, `/works/:workId` = detail
+- api_runtime: `/api/healthz`, `/api/floors`, `/api/products`, `/api/products/:workId`
+- collector: scripts/migrate.ts, scripts/collect-history.ts
+- ui: kinseri_dense_tracker
 - notes: no mock/no placeholder/no fake timer/rating/history
+- secrets: github=ok, cloudflare_pages=ok
+- runtime_bootstrap: `npm run migrate` ok
+- runtime_seed: local_history_seeded
+- local_verify: `/api/healthz` ok, `/api/products` ok, `/api/products/:workId` ok, `/` ok, `/works` ok
+- verify: `npm run build` ok, `npm run test:live` ok
