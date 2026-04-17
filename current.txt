@@ -24,5 +24,8 @@ goal: DMM.com 電子書籍価格トラッカーを Pages Functions + Neon Postgr
 - secrets: github=ok, cloudflare_pages=ok
 - runtime_bootstrap: `npm run migrate` ok
 - runtime_seed: local_history_seeded
+- workflow_collect: github_actions_manual_run_ok
+- deploy_manual: `https://dmm-seli.pages.dev` api_runtime_live
+- deploy_workflow: blocked_by_cloudflare_api_token_type
 - local_verify: `/api/healthz` ok, `/api/products` ok, `/api/products/:workId` ok, `/` ok, `/works` ok
 - verify: `npm run build` ok, `npm run test:live` ok
