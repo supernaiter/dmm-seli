@@ -24,14 +24,22 @@
 ## Automation loop
 
 1. Query open issues with `ready`.
-2. Skip issues with `in-progress`, `blocked`, `needs-contract`, `needs-human`, or `no-autopilot`.
-3. Pick one issue only and add `in-progress`.
-4. Read `POLICY.md`, `MEMORY.md`, `current.txt`, and the issue.
-5. Implement in the local repo.
-6. Run deterministic checks.
-7. Commit to `main` and push.
-8. Comment result to the issue.
-9. Remove `ready` and `in-progress`, then close issue or mark blocked.
+2. If none exist, seed missing issues from the north star and close criteria, then mark the next issue `ready`.
+3. Skip issues with `in-progress`, `blocked`, `needs-contract`, `needs-human`, or `no-autopilot`.
+4. Pick one issue only and add `in-progress`.
+5. Read `POLICY.md`, `MEMORY.md`, `current.txt`, and the issue.
+6. Implement in the local repo.
+7. Run deterministic checks.
+8. Commit to `main` and push.
+9. Comment result to the issue.
+10. Remove `ready` and `in-progress`, then close issue or mark blocked.
+
+## Backlog seed
+
+- source: `current.txt` goal, `POLICY.md` product priority, `docs/close-criteria.md`
+- action: create concrete GitHub issues with `Goal` and `Acceptance`
+- ready: exactly one next issue
+- forbidden: implementation, deploy, publish, secret rotation
 
 ## Reflection loop
 

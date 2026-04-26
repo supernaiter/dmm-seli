@@ -44,7 +44,7 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - done: [GH-2] GitHub-only SoT 移行 issue を作成
 - done: [GH-3] `workspace-autopilot-github` skill を作成し automation に接続
 - done: [GH-4] GitHub automation に `in-progress` claim と daily reflection を追加
-- done: [GH-000] reflection: deploy workflow block中の `[skip ci]` 運用を `POLICY.md` / `MEMORY.md` に追記
-- pending: [GH] next ready issue待ち
-- next: [GH] `ready` issue が来たら GitHub automation が1件だけ実行する
+- done: [GH-5] 北極星から GitHub backlog を投入し、最優先issueを `ready` 化
+- pending: [GH-5] 既存未コミット変更を棚卸しして実装事実として回収する
+- next: [GH-5] GitHub automation が `ready` issue を1件だけ実行する
 - blockers: none

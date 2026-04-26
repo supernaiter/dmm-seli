@@ -6,6 +6,7 @@
 - `autopilot-ready` in Linear stalled the runner because no issue had the label. GitHub uses the shorter `ready` label.
 - GitHub automation now has a reusable global skill: `/Users/naoki/.codex/skills/workspace-autopilot-github/SKILL.md`.
 - Add `in-progress` during each automation run to avoid duplicate issue ownership.
+- If no `ready` issue exists, the automation must seed/promote the next issue from the north star instead of waiting for a human.
 - Cloudflare deploy workflow is blocked by `CLOUDFLARE_API_TOKEN` auth error 10000. The required fix is a token that can read/edit Pages project `dmm-seli`.
 - Manual deploy is live at `https://dmm-seli.pages.dev`; do not treat deploy workflow failure as site-down.
 - While deploy is blocked, `[skip ci]` on doc-only/automation-only commits prevents `deploy-cloudflare-pages` runs on push and avoids noise.

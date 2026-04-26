@@ -3,6 +3,7 @@
 ## Source of truth
 
 - GitHub Issues are the only source of truth for work, decisions, blockers, and execution results.
+- Codex owns keeping the GitHub backlog seeded from the north star and close criteria. Humans should not need to manually invent the next issue.
 - Linear is frozen and reference-only. Do not create new Linear work or mirror GitHub state back to Linear.
 - Pull requests are not used. Codex works on `main`, commits directly, pushes, and writes results back to the GitHub issue.
 
@@ -18,14 +19,15 @@
 
 ## Work loop
 
-1. Pick one `ready` GitHub issue.
-2. Read `POLICY.md`, `MEMORY.md`, `current.txt`, and the issue body/comments.
-3. Inspect the local repo before editing.
-4. Implement the shortest useful change.
-5. Run deterministic checks closest to the change.
-6. Commit to `main` and push when checks pass.
-7. Comment on the issue with summary, changed files, verification, commit, and next action.
-8. Close the issue when done.
+1. If no `ready` issue exists, create missing GitHub issues from the goal and close criteria, then mark the next highest priority issue `ready`.
+2. Pick one `ready` GitHub issue.
+3. Read `POLICY.md`, `MEMORY.md`, `current.txt`, and the issue body/comments.
+4. Inspect the local repo before editing.
+5. Implement the shortest useful change.
+6. Run deterministic checks closest to the change.
+7. Commit to `main` and push when checks pass.
+8. Comment on the issue with summary, changed files, verification, commit, and next action.
+9. Close the issue when done.
 
 Implementation automation uses the global `workspace-autopilot-github` skill.
 
@@ -36,6 +38,7 @@ Implementation automation uses the global `workspace-autopilot-github` skill.
 - Never add mock data, fake timers, fake ratings, or placeholder history.
 - While `CLOUDFLARE_API_TOKEN` is blocked and `deploy-cloudflare-pages` is known to fail, it is acceptable to use `[skip ci]` on documentation-only or automation-only commits to avoid wasted deploy runs.
 - If there is no `ready` issue, do not edit `current.txt` or commit unless a real state change occurred.
+- Creating or promoting the next issue from the north star is a real state change.
 - If local code or read-only CI fails after an automation commit, auto-revert is allowed and must be recorded on the issue.
 
 ## Reflection
