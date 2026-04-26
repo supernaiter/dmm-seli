@@ -9,10 +9,12 @@
 - verification_facts: local checks and GitHub Actions
 - pull_requests: none
 - automation_start_label: `ready`
+- skill: `/Users/naoki/.codex/skills/workspace-autopilot-github/SKILL.md`
 
 ## Labels
 
 - `ready`: Codex may start this issue.
+- `needs-contract`: issue lacks enough goal or acceptance criteria for automation.
 - `needs-human`: human input or external account action required.
 - `blocked`: repo-local work cannot continue.
 - `no-autopilot`: Codex must not start this issue.

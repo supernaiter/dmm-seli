@@ -11,6 +11,7 @@
 - Codex may start only GitHub issues with the `ready` label.
 - Issues without `ready` are untouched.
 - Remove `ready` before closing an issue or when the issue becomes blocked.
+- Use `needs-contract` when the issue lacks a clear goal or acceptance criteria.
 - Use `needs-human` for external credentials, account changes, product judgment, or unclear requirements.
 - Use `blocked` when work cannot continue from repo-local facts.
 
@@ -24,6 +25,8 @@
 6. Commit to `main` and push when checks pass.
 7. Comment on the issue with summary, changed files, verification, commit, and next action.
 8. Close the issue when done.
+
+Implementation automation uses the global `workspace-autopilot-github` skill.
 
 ## Safety
 

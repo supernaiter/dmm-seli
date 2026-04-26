@@ -44,6 +44,7 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - done: [GH-000] GitHub-only SoT 用 `POLICY.md` / `MEMORY.md` / ops doc を追加
 - done: [GH-1] Cloudflare token更新 issue を GitHub に作成し `needs-human` + `blocked` を付与
 - done: [GH-2] GitHub-only SoT 移行 issue を作成
+- done: [GH-3] `workspace-autopilot-github` skill を作成し automation に接続
 - pending: [GH-1] GitHub secret `CLOUDFLARE_API_TOKEN` を Pages deploy可能なtokenへ更新する
 - next: [GH-1] token差し替え後に `ready` を付けて `deploy-cloudflare-pages` を再実行する
 - blockers: [GH-1] deploy workflow は Cloudflare API `/pages/projects/dmm-seli` auth error 10000 で継続block, manual token更新待ち

@@ -4,6 +4,7 @@
 
 - Linear plus local mirror plus automation memory caused duplicate source-of-truth overhead. Use GitHub Issues only.
 - `autopilot-ready` in Linear stalled the runner because no issue had the label. GitHub uses the shorter `ready` label.
+- GitHub automation now has a reusable global skill: `/Users/naoki/.codex/skills/workspace-autopilot-github/SKILL.md`.
 - Cloudflare deploy workflow is blocked by `CLOUDFLARE_API_TOKEN` auth error 10000. The required fix is a token that can read/edit Pages project `dmm-seli`.
 - Manual deploy is live at `https://dmm-seli.pages.dev`; do not treat deploy workflow failure as site-down.
 
