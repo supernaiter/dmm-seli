@@ -31,20 +31,16 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - linear_setup: frozen_reference_only
 - github_sot: issues=source_of_truth, policy=`POLICY.md`, memory=`MEMORY.md`, commits=implementation_facts, ci=verification_facts
 - automation: impl=`dmm-seli-github-implementation` hourly ACTIVE, reflect=`dmm-seli-github-reflection` daily ACTIVE, ready=`ready`, claim=`in-progress`
-- autopilot_last_run: 2026-04-27T04:28:10+09:00 old_linear_no-op（autopilot-ready issueなし）
+- autopilot_last_run: 2026-04-27T07:59:01+09:00 seeded ready issue
 - close_criteria: tracker_natural/detail_natural,fresh_data_no_broken_paths,natural_affiliate_cta,sibling_site_ready
 - issue_priority: FDS-137,FDS-138,FDS-139,FDS-140,FDS-141,FDS-142,FDS-143,FDS-145,FDS-144
 - close_strategy: kinseri_like_ui_first, kinseri_full_copy_first, stable_live_data, affiliate_revenue_path, sibling_link_readiness, review_then_trim_noise
 - close_non_goals: unique_branding, extra_features, ci_deploy_perfection_before_ui_fit, blind_copy_of_obvious_redundancy
 - local_verify: `/api/healthz` ok, `/api/products` ok, `/api/products/:workId` ok, `/` ok, `/works` ok
 - verify: `npm run build` ok, `npm run test:live` ok
-- done: [FDS-135] workspace-autopilot-linear contract を hourly cron 実行用に固定
 - done: [GH-000] GitHub-only SoT 用 `POLICY.md` / `MEMORY.md` / ops doc を追加
-- done: [GH-1] Cloudflare token更新 issue を GitHub に作成し `needs-human` + `blocked` を付与
-- done: [GH-2] GitHub-only SoT 移行 issue を作成
-- done: [GH-3] `workspace-autopilot-github` skill を作成し automation に接続
-- done: [GH-4] GitHub automation に `in-progress` claim と daily reflection を追加
-- done: [GH-5] 北極星から GitHub backlog を投入し、最優先issueを `ready` 化
+- done: [GH-1] Cloudflare Pages token更新 issue を reopen し `needs-human` + `blocked` を付与
+- done: [GH-10] 北極星から GitHub backlog を投入し、最優先issueを `ready` 化
 - done: [GH-5] 既存未コミット変更を回収して commit/push（6bbc530）
-- next: GitHub backlog を `ready` で維持する
-- blockers: none
+- next: [GH-10] を実装し、検証して main へ commit/push
+- blockers: [GH-1] Cloudflare Pages token（GitHub secret `CLOUDFLARE_API_TOKEN`）
