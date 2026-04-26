@@ -6,6 +6,8 @@ type SiteShellProps = {
 }
 
 export function SiteShell({ children }: SiteShellProps) {
+  const kinseriUrl = "https://yapi.ta2o.net/kndlsl/"
+
   return (
     <div className="site-shell">
       <header className="site-header">
@@ -13,15 +15,15 @@ export function SiteShell({ children }: SiteShellProps) {
           <span className="brand-mark">d</span>
           <span>
             <strong>dmm-seli</strong>
-            <small>DMM電子書籍価格トラッカー</small>
+            <small>DMM の価格は dmm-seli、Kindle は兄弟サイトのキンセリ</small>
           </span>
         </Link>
         <nav className="site-nav" aria-label="global">
           <NavLink to="/" end>
             追跡一覧
           </NavLink>
-          <a href="https://yapi.ta2o.net/kndlsl/" target="_blank" rel="noreferrer">
-            Kindleはキンセリ
+          <a href={kinseriUrl} target="_blank" rel="noreferrer">
+            Kindle は兄弟サイトのキンセリ
           </a>
         </nav>
       </header>

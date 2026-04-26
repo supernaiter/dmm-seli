@@ -5,6 +5,11 @@ import { fetchFloorItems, normalizeItem } from "./lib/dmm-client"
 import "./lib/env"
 
 type CollectedWork = CatalogWork & { releaseDate: string | null }
+type FloorFetchStat = {
+  floor: "comic" | "novel" | "otherbooks" | "photo"
+  sort: "rank" | "date"
+  items: number
+}
 
 function mergeWork(left: CollectedWork, right: CollectedWork): CollectedWork {
   return {
@@ -84,10 +89,15 @@ async function main() {
 
   const capturedAt = new Date().toISOString()
   const registry = new Map<string, CollectedWork>()
+  const floorFetchStats: FloorFetchStat[] = []
 
   for (const floor of ["comic", "novel", "otherbooks", "photo"] as const) {
     for (const sort of ["rank", "date"] as const) {
       const items = await fetchFloorItems({ floor, sort, hits: 100 })
+      floorFetchStats.push({ floor, sort, items: items.length })
+      if (!items.length) {
+        throw new Error(`collector fetch returned empty: floor=${floor} sort=${sort}`)
+      }
       items.forEach((item, index) => {
         const normalized = normalizeItem({
           item,
@@ -105,6 +115,13 @@ async function main() {
   }
 
   const existingStates = new Map((await getWorkStates(sql)).map((row) => [row.work_id, row]))
+  const minimumExpectedWorks = Math.max(200, Math.floor(existingStates.size * 0.6))
+  if (registry.size < minimumExpectedWorks) {
+    throw new Error(
+      `collector registry too small: works=${registry.size} minimumExpectedWorks=${minimumExpectedWorks} previousWorks=${existingStates.size}`,
+    )
+  }
+
   let snapshotWrites = 0
 
   for (const work of registry.values()) {
@@ -119,7 +136,10 @@ async function main() {
     JSON.stringify({
       capturedAt,
       works: registry.size,
+      previousWorks: existingStates.size,
+      minimumExpectedWorks,
       snapshotWrites,
+      floorFetchStats,
     }),
   )
 

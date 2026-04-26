@@ -5,6 +5,7 @@ import clsx from "clsx"
 import type { CatalogWork, ViewDensity } from "../lib/catalog"
 import { FLOOR_LABELS } from "../lib/catalog"
 import { formatDiscount, formatPointRate, formatUpdatedAt, formatYen } from "../lib/format"
+import { CoverImage } from "./CoverImage"
 
 type WorkTileProps = {
   work: CatalogWork
@@ -13,6 +14,11 @@ type WorkTileProps = {
 
 export function WorkTile({ work, density = "wide" }: WorkTileProps) {
   const reduceMotion = useReducedMotion()
+  const ctaCopy = work.isOnSale
+    ? "セール理由を見てDMMへ"
+    : (work.pointRate ?? 0) > 0
+      ? "還元込みでDMMを見る"
+      : "詳細で価格を確認"
 
   return (
     <motion.div
@@ -23,7 +29,7 @@ export function WorkTile({ work, density = "wide" }: WorkTileProps) {
       <Link to={`/works/${encodeURIComponent(work.workId)}`}>
         <figure>
           <div className="work-cover">
-            {work.imageUrl ? <img alt={work.title} loading="lazy" src={work.imageUrl} /> : <span>NO COVER</span>}
+            <CoverImage alt={work.title} src={work.imageUrl} />
           </div>
           <figcaption>
             <div className="work-meta-row">
@@ -53,6 +59,10 @@ export function WorkTile({ work, density = "wide" }: WorkTileProps) {
                 <dd>{formatYen(work.pastLowest)}</dd>
               </div>
             </dl>
+            <div className="work-cta-row">
+              <span>{ctaCopy}</span>
+              <strong>→</strong>
+            </div>
             <p className="work-updated">{formatUpdatedAt(work.lastCapturedAt)}</p>
           </figcaption>
         </figure>

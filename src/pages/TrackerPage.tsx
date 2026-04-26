@@ -1,11 +1,14 @@
 import { startTransition, useDeferredValue, useEffect, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
+import { HeroShelf } from "../components/HeroShelf"
 import { WorkTile } from "../components/WorkTile"
 import type { CatalogWork, Floor, FloorsPayload, SortMode, ViewDensity } from "../lib/catalog"
-import { FLOOR_LABELS, FLOOR_ORDER } from "../lib/catalog"
+import { FLOOR_LABELS, FLOOR_ORDER, SORT_MODE_LABELS } from "../lib/catalog"
 import { loadFloorsPayload, loadProducts } from "../lib/data"
 import { formatUpdatedAt } from "../lib/format"
+
+const SORT_MODE_OPTIONS: SortMode[] = ["rank", "date", "discount", "price_asc", "price_desc"]
 
 export function TrackerPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -70,51 +73,85 @@ export function TrackerPage() {
     })
   }
 
+  const featuredWorks = floors?.featured ?? []
+  const activeFilters = [
+    floor ? FLOOR_LABELS[floor] : "全フロア",
+    saleOnly ? "セール中のみ" : null,
+    keyword ? `検索: ${keyword}` : null,
+    SORT_MODE_LABELS[sort],
+    density === "dense" ? "密表示" : "広表示",
+  ].filter(Boolean)
+  const hasActiveRefine = Boolean(floor || saleOnly || keyword || sort !== "rank" || density !== "wide")
+
   return (
     <div className="page page-tracker">
       <section className="tracker-lead">
-        <div>
-          <p className="hero-eyebrow">Kinseri-flavored tracker</p>
-          <h1>dmm-seli</h1>
-          <p>
-            DMM.com ebook 4フロアを、一覧主導で追うための価格トラッカーです。過去最安、30日/180日最安、相場帯、
-            実質価格まで同じ視線で見られる形に寄せています。
-          </p>
+        <div className="tracker-lead-copy">
+          <div>
+            <p className="hero-eyebrow">Kinseri-flavored tracker</p>
+            <h1>dmm-seli</h1>
+            <p>
+              DMM.com ebook 4フロアを、一覧主導で追うための価格トラッカーです。値動きが大きい作品、人気作品、新着作品を
+              先に見てから、同じ画面のまま追跡一覧へ降りる流れに寄せています。
+            </p>
+            <p>Kindle の価格は兄弟サイトのキンセリ、DMM の価格は dmm-seli で追う一文で案内できます。</p>
+          </div>
+
+          <div className="tracker-jump-grid">
+            <a href="#featured">注目値動き</a>
+            <a href="#popular">人気作品</a>
+            <a href="#fresh">新着作品</a>
+            <a href="#tracker-list">追跡一覧</a>
+          </div>
+
+          <div className="tracker-stats-grid">
+            <div className="tracker-stat-card">
+              <dt>最終更新</dt>
+              <dd>{floors ? formatUpdatedAt(floors.updatedAt) : "読込中"}</dd>
+            </div>
+            <div className="tracker-stat-card">
+              <dt>追跡件数</dt>
+              <dd>{floors ? `${Object.values(floors.counts).reduce((sum, count) => sum + count, 0)}件` : "..."}</dd>
+            </div>
+          </div>
         </div>
-        <div className="tracker-lead-meta">
-          <div>
-            <dt>最終更新</dt>
-            <dd>{floors ? formatUpdatedAt(floors.updatedAt) : "読込中"}</dd>
-          </div>
-          <div>
-            <dt>追跡件数</dt>
-            <dd>{floors ? `${Object.values(floors.counts).reduce((sum, count) => sum + count, 0)}件` : "..."}</dd>
-          </div>
-          <div>
-            <dt>導線</dt>
-            <dd>
-              <a href="https://yapi.ta2o.net/kndlsl/" rel="noreferrer" target="_blank">
-                Kindle はキンセリへ
-              </a>
-            </dd>
-          </div>
+        <div className="tracker-lead-visual">
+          <HeroShelf works={[...featuredWorks, ...popular, ...fresh]} />
         </div>
       </section>
 
+      <section className="tracker-floor-strip">
+        <button className={!floor ? "is-active" : ""} onClick={() => patchSearch({ floor: null })} type="button">
+          <span>全フロア</span>
+          <strong>{floors ? `${Object.values(floors.counts).reduce((sum, count) => sum + count, 0)}件` : "..."}</strong>
+        </button>
+        {FLOOR_ORDER.map((candidate) => (
+          <button
+            className={floor === candidate ? "is-active" : ""}
+            key={candidate}
+            onClick={() => patchSearch({ floor: candidate })}
+            type="button"
+          >
+            <span>{FLOOR_LABELS[candidate]}</span>
+            <strong>{floors ? `${floors.counts[candidate]}件` : "..."}</strong>
+          </button>
+        ))}
+      </section>
+
       <section className="tracker-rails">
-        <article>
+        <article id="featured">
           <div className="section-head">
             <p className="section-eyebrow">Featured</p>
             <h2>注目値動き</h2>
           </div>
           <div className="rail-grid">
-            {(floors?.featured ?? []).slice(0, 8).map((work) => (
+            {featuredWorks.slice(0, 8).map((work) => (
               <WorkTile density="rail" key={work.workId} work={work} />
             ))}
           </div>
         </article>
 
-        <article>
+        <article id="popular">
           <div className="section-head">
             <p className="section-eyebrow">Popular</p>
             <h2>人気作品</h2>
@@ -126,7 +163,7 @@ export function TrackerPage() {
           </div>
         </article>
 
-        <article>
+        <article id="fresh">
           <div className="section-head">
             <p className="section-eyebrow">Fresh</p>
             <h2>新着作品</h2>
@@ -139,15 +176,41 @@ export function TrackerPage() {
         </article>
       </section>
 
-      <section className="tracker-toolbar">
+      <section className="tracker-toolbar" id="tracker-list">
         <div className="tracker-toolbar__top">
           <div className="toolbar-copy">
-            <p className="section-eyebrow">Tracker</p>
+            <p className="section-eyebrow">Tracker List</p>
             <h2>追跡一覧</h2>
           </div>
-          <div className="toolbar-updated">
-            <span>表示件数</span>
-            <strong>{loadingList ? "..." : `${works.length}件`}</strong>
+          <div className="toolbar-summary-card">
+            <div className="toolbar-updated">
+              <span>表示件数</span>
+              <strong>{loadingList ? "..." : `${works.length}件`}</strong>
+            </div>
+            {hasActiveRefine ? (
+              <button
+                className="toolbar-reset"
+                onClick={() => patchSearch({ floor: null, sale: null, q: null, sort: null, density: null })}
+                type="button"
+              >
+                絞り込みを外す
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="toolbar-summary">
+          <p>人気・新着・値動きから拾って、そのまま一覧で絞り込む流れを前提にしています。</p>
+          <div className="toolbar-chips">
+            {activeFilters.map((label) => (
+              <span className="pill" key={label}>
+                {label}
+              </span>
+            ))}
+          </div>
+          <div className="tracker-cta-note">
+            <strong>最短導線:</strong>
+            <span>一覧で価格差を見つける → 詳細で理由を確認 → DMM へ進む</span>
           </div>
         </div>
 
@@ -163,57 +226,50 @@ export function TrackerPage() {
           </label>
         </div>
 
-        <div className="toolbar-filters">
-          <div className="toolbar-group">
-            <button className={!floor ? "is-active" : ""} onClick={() => patchSearch({ floor: null })} type="button">
-              全部
-            </button>
-            {FLOOR_ORDER.map((candidate) => (
-              <button
-                className={floor === candidate ? "is-active" : ""}
-                key={candidate}
-                onClick={() => patchSearch({ floor: candidate })}
-                type="button"
-              >
-                {FLOOR_LABELS[candidate]}
-                <small>{floors ? floors.counts[candidate] : "..."}</small>
-              </button>
-            ))}
+        <div className="toolbar-panel">
+          <div className="toolbar-sort-rail">
+            <span>並び順</span>
+            <div className="toolbar-group">
+              {SORT_MODE_OPTIONS.map((candidate) => (
+                <button
+                  className={sort === candidate ? "is-active" : ""}
+                  key={candidate}
+                  onClick={() => patchSearch({ sort: candidate === "rank" ? null : candidate })}
+                  type="button"
+                >
+                  {SORT_MODE_LABELS[candidate]}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="toolbar-inline">
-            <label className="toolbar-toggle">
-              <input
-                checked={saleOnly}
-                onChange={(event) => patchSearch({ sale: event.target.checked ? "1" : null })}
-                type="checkbox"
-              />
-              <span>セール中のみ</span>
-            </label>
+          <div className="toolbar-filters">
+            <div className="toolbar-inline toolbar-inline--start">
+              <label className="toolbar-toggle">
+                <input
+                  checked={saleOnly}
+                  onChange={(event) => patchSearch({ sale: event.target.checked ? "1" : null })}
+                  type="checkbox"
+                />
+                <span>セール中のみ</span>
+              </label>
 
-            <select onChange={(event) => patchSearch({ sort: event.target.value })} value={sort}>
-              <option value="rank">人気順</option>
-              <option value="date">新着順</option>
-              <option value="price_asc">価格が安い順</option>
-              <option value="price_desc">価格が高い順</option>
-              <option value="discount">割引率順</option>
-            </select>
-
-            <div className="density-toggle">
-              <button
-                className={density === "dense" ? "is-active" : ""}
-                onClick={() => patchSearch({ density: "dense" })}
-                type="button"
-              >
-                密
-              </button>
-              <button
-                className={density === "wide" ? "is-active" : ""}
-                onClick={() => patchSearch({ density: "wide" })}
-                type="button"
-              >
-                広
-              </button>
+              <div className="density-toggle">
+                <button
+                  className={density === "dense" ? "is-active" : ""}
+                  onClick={() => patchSearch({ density: "dense" })}
+                  type="button"
+                >
+                  密
+                </button>
+                <button
+                  className={density === "wide" ? "is-active" : ""}
+                  onClick={() => patchSearch({ density: null })}
+                  type="button"
+                >
+                  広
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -230,6 +286,7 @@ export function TrackerPage() {
       {!loadingList && !works.length && !error ? (
         <div className="empty-state">
           <p>条件に合う作品がありません。</p>
+          <p>フロアか検索条件を外して、別の作品群に切り替えてください。</p>
           <Link className="button button--ghost" to="/">
             条件をリセット
           </Link>

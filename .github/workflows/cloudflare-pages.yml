@@ -6,11 +6,19 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy-cloudflare-pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
+      deployments: write
+    env:
+      CLOUDFLARE_PAGES_PROJECT: dmm-seli
     steps:
       - uses: actions/checkout@v4
 
@@ -21,11 +29,27 @@ jobs:
 
       - run: npm ci
 
+      - name: Preflight Cloudflare Pages auth
+        run: npm run test:cloudflare-auth
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
       - run: npm run build
 
       - name: Deploy to Cloudflare Pages
+        id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name dmm-seli --branch main
+          wranglerVersion: "4"
+          command: pages deploy dist --project-name ${{ env.CLOUDFLARE_PAGES_PROJECT }} --branch main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify deployed Pages URL
+        if: ${{ steps.deploy.outputs.deployment-url != '' }}
+        run: npm run test:cloudflare-deploy
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+          ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}

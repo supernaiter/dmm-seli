@@ -1,10 +1,36 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
+import { CoverImage } from "../components/CoverImage"
 import type { WorkDetail } from "../lib/catalog"
 import { FLOOR_LABELS } from "../lib/catalog"
 import { loadWorkDetail } from "../lib/data"
+import { toSafeExternalUrl } from "../lib/external"
 import { formatDiscount, formatPointRate, formatReleaseDate, formatUpdatedAt, formatYen } from "../lib/format"
+
+function describeBandPosition(current: number | null, bandMin: number | null, bandMax: number | null) {
+  if (current == null || bandMin == null || bandMax == null) return "相場帯情報なし"
+  if (current <= bandMin) return "相場帯の下限"
+  if (current >= bandMax) return "相場帯の上限"
+  return "相場帯の中ほど"
+}
+
+function describeModeGap(current: number | null, mode: number | null) {
+  if (current == null || mode == null) return "よくある価格との比較なし"
+  if (current === mode) return "よくある価格と同水準"
+  const diff = Math.abs(current - mode)
+  return current < mode ? `よくある価格より ${formatYen(diff)} 安い` : `よくある価格より ${formatYen(diff)} 高い`
+}
+
+function describeRecentTrend(current: number | null, historyPrices: number[]) {
+  if (current == null || historyPrices.length < 2) return "最近の比較データなし"
+  const recentWindow = historyPrices.slice(0, Math.min(historyPrices.length, 7))
+  const recentMin = Math.min(...recentWindow)
+  const recentMax = Math.max(...recentWindow)
+  if (current <= recentMin) return "直近では安い水準"
+  if (current >= recentMax) return "直近では高い水準"
+  return "直近の中間水準"
+}
 
 export function WorkDetailPage() {
   const params = useParams()
@@ -30,6 +56,21 @@ export function WorkDetailPage() {
     return <p className="empty-copy">詳細を読み込み中です。</p>
   }
 
+  const latestHistory = work.history[0] ?? null
+  const recentHistory = work.history.slice(0, 6)
+  const hasCampaign = work.isOnSale || (work.pointRate ?? 0) > 0
+  const historyPrices = work.history.map((point) => point.price)
+  const bandPosition = describeBandPosition(work.latestPrice, work.bandMin, work.bandMax)
+  const modeGap = describeModeGap(work.latestPrice, work.mode)
+  const recentTrend = describeRecentTrend(work.latestPrice, historyPrices)
+  const affiliateUrl = toSafeExternalUrl(work.affiliateUrl)
+  const tachiyomiUrl = toSafeExternalUrl(work.tachiyomiUrl)
+  const purchaseReasons = [
+    work.isOnSale ? `${formatDiscount(work.discountPct)} セール中` : null,
+    (work.pointRate ?? 0) > 0 ? `${formatPointRate(work.pointRate)} 付き` : null,
+    work.pastLowest != null && work.latestPrice != null && work.latestPrice <= work.pastLowest ? "過去最安水準" : null,
+  ].filter(Boolean)
+
   return (
     <div className="page page-detail">
       <Link className="back-link" to="/">
@@ -38,7 +79,7 @@ export function WorkDetailPage() {
 
       <section className="detail-hero">
         <div className="detail-cover">
-          {work.imageUrl ? <img alt={work.title} src={work.imageUrl} /> : <span>NO COVER</span>}
+          <CoverImage alt={work.title} src={work.imageUrl} />
         </div>
         <div className="detail-copy">
           <div className="detail-pills">
@@ -52,6 +93,34 @@ export function WorkDetailPage() {
             {work.series ? ` ・ ${work.series}` : ""}
             {work.maker ? ` ・ ${work.maker}` : ""}
           </p>
+
+          <div className="detail-lead-grid">
+            <div className="detail-price-spotlight">
+              <span>いま見る理由</span>
+              <strong>{hasCampaign ? purchaseReasons.join(" / ") : "価格監視中"}</strong>
+              <small>
+                最終取得 {formatUpdatedAt(work.updatedAt)}
+                {latestHistory ? ` / 履歴最新 ${latestHistory.dateLabel}` : ""}
+              </small>
+            </div>
+
+            <dl className="detail-mini-stats">
+              <div>
+                <dt>過去最安</dt>
+                <dd>{formatYen(work.pastLowest)}</dd>
+              </div>
+              <div>
+                <dt>相場帯</dt>
+                <dd>
+                  {formatYen(work.bandMin)} - {formatYen(work.bandMax)}
+                </dd>
+              </div>
+              <div>
+                <dt>よくある価格</dt>
+                <dd>{formatYen(work.mode)}</dd>
+              </div>
+            </dl>
+          </div>
 
           <dl className="price-panel">
             <div>
@@ -73,70 +142,47 @@ export function WorkDetailPage() {
           </dl>
 
           <div className="detail-actions">
-            {work.tachiyomiUrl ? (
-              <a className="button button--primary" href={work.tachiyomiUrl} rel="noreferrer" target="_blank">
+            {affiliateUrl ? (
+              <a className="button button--primary" href={affiliateUrl} rel="noreferrer" target="_blank">
+                この価格でDMMへ進む
+              </a>
+            ) : null}
+            {tachiyomiUrl ? (
+              <a className="button button--ghost" href={tachiyomiUrl} rel="noreferrer" target="_blank">
                 試し読みへ
               </a>
             ) : null}
-            {work.affiliateUrl ? (
-              <a className="button button--ghost" href={work.affiliateUrl} rel="noreferrer" target="_blank">
-                DMMで見る
-              </a>
-            ) : null}
+          </div>
+
+          <div className="detail-links">
+            <Link className="button button--ghost" to="/works">
+              一覧へ戻る
+            </Link>
+            <span>一覧比較 → この画面で理由確認 → DMM 送客の順で見られます。</span>
           </div>
         </div>
       </section>
 
-      <section className="detail-stat-grid">
-        <article className="detail-stat-card">
-          <h2>過去最安</h2>
-          <strong>{formatYen(work.pastLowest)}</strong>
-        </article>
-        <article className="detail-stat-card">
-          <h2>相場帯</h2>
-          <strong>
-            {formatYen(work.bandMin)} - {formatYen(work.bandMax)}
-          </strong>
-        </article>
-        <article className="detail-stat-card">
-          <h2>よくある価格</h2>
-          <strong>{formatYen(work.mode)}</strong>
-        </article>
-      </section>
-
       <section className="detail-grid">
-        <article>
-          <h2>書誌情報</h2>
-          <dl className="meta-list">
+        <article className="detail-grid-main">
+          <div className="detail-section-head">
             <div>
-              <dt>配信日</dt>
-              <dd>{formatReleaseDate(work.releaseDate)}</dd>
+              <p className="section-eyebrow">History</p>
+              <h2>価格履歴</h2>
             </div>
-            <div>
-              <dt>出版社</dt>
-              <dd>{work.maker ?? "情報なし"}</dd>
+            <span>{work.history.length ? `${work.history.length}件` : "履歴なし"}</span>
+          </div>
+          {recentHistory.length ? (
+            <div className="detail-history-strip">
+              {recentHistory.map((point) => (
+                <div key={point.capturedAt}>
+                  <dt>{point.dateLabel}</dt>
+                  <dd>{formatYen(point.price)}</dd>
+                  <small>{formatYen(point.effectivePrice)} / {formatPointRate(point.pointRate)}</small>
+                </div>
+              ))}
             </div>
-            <div>
-              <dt>シリーズ</dt>
-              <dd>{work.series ?? "情報なし"}</dd>
-            </div>
-            <div>
-              <dt>ISBN</dt>
-              <dd>{work.isbn ?? "情報なし"}</dd>
-            </div>
-            <div>
-              <dt>content_id</dt>
-              <dd>{work.contentId}</dd>
-            </div>
-            <div>
-              <dt>最終更新</dt>
-              <dd>{formatUpdatedAt(work.updatedAt)}</dd>
-            </div>
-          </dl>
-        </article>
-
-        <article>
-          <h2>価格履歴</h2>
+          ) : null}
           {work.history.length ? (
             <div className="history-table-wrap">
               <table className="history-table">
@@ -163,8 +209,47 @@ export function WorkDetailPage() {
               </table>
             </div>
           ) : (
-            <p>この作品はまだ価格履歴がありません。</p>
+            <p>この作品はまだ価格履歴がありません。次回以降の収集で履歴が増えるまで、最終更新と現在価格を目安にしてください。</p>
           )}
+        </article>
+
+        <article className="detail-grid-side">
+          <div className="detail-section-head">
+            <div>
+              <p className="section-eyebrow">Meta</p>
+              <h2>書誌情報</h2>
+            </div>
+          </div>
+          <dl className="meta-list">
+            <div>
+              <dt>配信日</dt>
+              <dd>{formatReleaseDate(work.releaseDate)}</dd>
+            </div>
+            <div>
+              <dt>出版社</dt>
+              <dd>{work.maker ?? "情報なし"}</dd>
+            </div>
+            <div>
+              <dt>シリーズ</dt>
+              <dd>{work.series ?? "情報なし"}</dd>
+            </div>
+            <div>
+              <dt>ISBN</dt>
+              <dd>{work.isbn ?? "情報なし"}</dd>
+            </div>
+            <div>
+              <dt>content_id</dt>
+              <dd>{work.contentId}</dd>
+            </div>
+            <div>
+              <dt>最終更新</dt>
+              <dd>{formatUpdatedAt(work.updatedAt)}</dd>
+            </div>
+          </dl>
+
+          <div className="detail-side-note">
+            <p>{bandPosition} / {recentTrend} / {modeGap}</p>
+          </div>
         </article>
       </section>
     </div>

@@ -1,4 +1,5 @@
 import type { CatalogWork } from "../lib/catalog"
+import { CoverImage } from "./CoverImage"
 
 type HeroShelfProps = {
   works: CatalogWork[]
@@ -28,7 +29,7 @@ export function HeroShelf({ works }: HeroShelfProps) {
           key={rowIndex}
         >
           {row.map((work) => (
-            <img key={work.workId} alt="" src={work.imageUrl ?? undefined} loading="lazy" />
+            <CoverImage alt="" key={work.workId} src={work.imageUrl} />
           ))}
         </div>
       ))}

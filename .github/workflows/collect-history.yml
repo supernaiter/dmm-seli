@@ -8,6 +8,7 @@ on:
 jobs:
   collect:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -20,7 +21,19 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run collect:history
+      - name: Collect price history
+        run: |
+          set -euo pipefail
+          output="$(npm run collect:history)"
+          echo "$output"
+          summary_line="$(printf '%s\n' "$output" | tail -n 1)"
+          {
+            echo "## collect-price-history"
+            echo
+            echo '```json'
+            echo "$summary_line"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
         env:
           DMM_API_ID: ${{ secrets.DMM_API_ID }}
           DMM_AFFILIATE_ID: ${{ secrets.DMM_AFFILIATE_ID }}
