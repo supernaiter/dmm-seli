@@ -8,6 +8,8 @@
 - Add `in-progress` during each automation run to avoid duplicate issue ownership.
 - Cloudflare deploy workflow is blocked by `CLOUDFLARE_API_TOKEN` auth error 10000. The required fix is a token that can read/edit Pages project `dmm-seli`.
 - Manual deploy is live at `https://dmm-seli.pages.dev`; do not treat deploy workflow failure as site-down.
+- While deploy is blocked, `[skip ci]` on doc-only/automation-only commits prevents `deploy-cloudflare-pages` runs on push and avoids noise.
+- `deploy-cloudflare-pages` failure log shows `wrangler-action@v3` installed Wrangler `3.90.0` even when `wranglerVersion: "4"` is set; if deploy still fails after token fix, confirm actual Wrangler version used in Actions.
 
 ## Repeat checks
 

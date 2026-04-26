@@ -34,6 +34,7 @@ Implementation automation uses the global `workspace-autopilot-github` skill.
 - Never revert unrelated uncommitted changes.
 - Never deploy, publish, rotate secrets, or perform irreversible external operations unless the issue explicitly asks for it and required credentials are present.
 - Never add mock data, fake timers, fake ratings, or placeholder history.
+- While `CLOUDFLARE_API_TOKEN` is blocked and `deploy-cloudflare-pages` is known to fail, it is acceptable to use `[skip ci]` on documentation-only or automation-only commits to avoid wasted deploy runs.
 - If there is no `ready` issue, do not edit `current.txt` or commit unless a real state change occurred.
 - If local code or read-only CI fails after an automation commit, auto-revert is allowed and must be recorded on the issue.
 
