@@ -10,6 +10,7 @@
 
 - Codex may start only GitHub issues with the `ready` label.
 - Issues without `ready` are untouched.
+- Use `in-progress` while an automation run owns an issue; other runs must skip it.
 - Remove `ready` before closing an issue or when the issue becomes blocked.
 - Use `needs-contract` when the issue lacks a clear goal or acceptance criteria.
 - Use `needs-human` for external credentials, account changes, product judgment, or unclear requirements.
@@ -33,7 +34,13 @@ Implementation automation uses the global `workspace-autopilot-github` skill.
 - Never revert unrelated uncommitted changes.
 - Never deploy, publish, rotate secrets, or perform irreversible external operations unless the issue explicitly asks for it and required credentials are present.
 - Never add mock data, fake timers, fake ratings, or placeholder history.
+- If there is no `ready` issue, do not edit `current.txt` or commit unless a real state change occurred.
 - If local code or read-only CI fails after an automation commit, auto-revert is allowed and must be recorded on the issue.
+
+## Reflection
+
+- Daily reflection may update `MEMORY.md` and promote repeated lessons to `POLICY.md`.
+- Reflection must not implement issue work, deploy, publish, or rotate secrets.
 
 ## Product priority
 

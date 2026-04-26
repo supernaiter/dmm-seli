@@ -30,7 +30,7 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - linear_project: `DMM.com 電子書籍価格トラッカー v1` `e391ae7a-40fa-47bf-991b-0ce32b74e293`
 - linear_setup: frozen_reference_only
 - github_sot: issues=source_of_truth, policy=`POLICY.md`, memory=`MEMORY.md`, commits=implementation_facts, ci=verification_facts
-- automation: cron=`dmm-seli-github-implementation`, cadence=`hourly`, status=`ACTIVE`, ready_label=`ready`
+- automation: impl=`dmm-seli-github-implementation` hourly ACTIVE, reflect=`dmm-seli-github-reflection` daily ACTIVE, ready=`ready`, claim=`in-progress`
 - autopilot_last_run: 2026-04-27T04:28:10+09:00 old_linear_no-op（autopilot-ready issueなし）
 - close_criteria: tracker_natural/detail_natural,fresh_data_no_broken_paths,natural_affiliate_cta,sibling_site_ready
 - issue_priority: FDS-137,FDS-138,FDS-139,FDS-140,FDS-141,FDS-142,FDS-143,FDS-145,FDS-144
@@ -38,13 +38,13 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - close_non_goals: unique_branding, extra_features, ci_deploy_perfection_before_ui_fit, blind_copy_of_obvious_redundancy
 - local_verify: `/api/healthz` ok, `/api/products` ok, `/api/products/:workId` ok, `/` ok, `/works` ok
 - verify: `npm run build` ok, `npm run test:live` ok
-- done: [FDS-142] deploy workflow auth preflight + deploy verify script + healthz body check + retry/summary を追加
 - done: [FDS-142] deploy verify script に alias URL 到達確認を追加
 - done: [FDS-135] workspace-autopilot-linear contract を hourly cron 実行用に固定
 - done: [GH-000] GitHub-only SoT 用 `POLICY.md` / `MEMORY.md` / ops doc を追加
 - done: [GH-1] Cloudflare token更新 issue を GitHub に作成し `needs-human` + `blocked` を付与
 - done: [GH-2] GitHub-only SoT 移行 issue を作成
 - done: [GH-3] `workspace-autopilot-github` skill を作成し automation に接続
+- done: [GH-4] GitHub automation に `in-progress` claim と daily reflection を追加
 - pending: [GH-1] GitHub secret `CLOUDFLARE_API_TOKEN` を Pages deploy可能なtokenへ更新する
 - next: [GH-1] token差し替え後に `ready` を付けて `deploy-cloudflare-pages` を再実行する
 - blockers: [GH-1] deploy workflow は Cloudflare API `/pages/projects/dmm-seli` auth error 10000 で継続block, manual token更新待ち
