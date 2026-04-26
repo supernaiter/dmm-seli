@@ -38,7 +38,6 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - close_non_goals: unique_branding, extra_features, ci_deploy_perfection_before_ui_fit, blind_copy_of_obvious_redundancy
 - local_verify: `/api/healthz` ok, `/api/products` ok, `/api/products/:workId` ok, `/` ok, `/works` ok
 - verify: `npm run build` ok, `npm run test:live` ok
-- done: [FDS-142] deploy verify script に alias URL 到達確認を追加
 - done: [FDS-135] workspace-autopilot-linear contract を hourly cron 実行用に固定
 - done: [GH-000] GitHub-only SoT 用 `POLICY.md` / `MEMORY.md` / ops doc を追加
 - done: [GH-1] Cloudflare token更新 issue を GitHub に作成し `needs-human` + `blocked` を付与
