@@ -47,3 +47,4 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - consult_pro: 2026-04-27 GH-7→GH-8→GH-12→GH-6, GH-7は公式/取得済みaffiliateUrl優先
 - next: [GH-000] consult-pro/roadmap判断待ち
 - blockers: none
+  - [GH-000] git-pilot init 2026-04-27
