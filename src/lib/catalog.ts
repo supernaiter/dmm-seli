@@ -50,7 +50,7 @@ export type WorkDetail = CatalogWork & {
 }
 
 export type FloorsPayload = {
-  updatedAt: string
+  updatedAt: string | null
   counts: Record<Floor, number>
   featured: CatalogWork[]
 }

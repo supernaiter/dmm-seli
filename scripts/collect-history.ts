@@ -11,6 +11,11 @@ type FloorFetchStat = {
   items: number
 }
 
+const FLOOR_COUNT = 4
+const SORT_COUNT = 2
+const HITS_PER_FETCH = 100
+const MINIMUM_REGISTRY_RATIO = 0.7
+
 function mergeWork(left: CollectedWork, right: CollectedWork): CollectedWork {
   return {
     ...left,
@@ -93,7 +98,7 @@ async function main() {
 
   for (const floor of ["comic", "novel", "otherbooks", "photo"] as const) {
     for (const sort of ["rank", "date"] as const) {
-      const items = await fetchFloorItems({ floor, sort, hits: 100 })
+      const items = await fetchFloorItems({ floor, sort, hits: HITS_PER_FETCH })
       floorFetchStats.push({ floor, sort, items: items.length })
       if (!items.length) {
         throw new Error(`collector fetch returned empty: floor=${floor} sort=${sort}`)
@@ -115,10 +120,11 @@ async function main() {
   }
 
   const existingStates = new Map((await getWorkStates(sql)).map((row) => [row.work_id, row]))
-  const minimumExpectedWorks = Math.max(200, Math.floor(existingStates.size * 0.6))
+  const maximumFetchableItems = FLOOR_COUNT * SORT_COUNT * HITS_PER_FETCH
+  const minimumExpectedWorks = Math.floor(maximumFetchableItems * MINIMUM_REGISTRY_RATIO)
   if (registry.size < minimumExpectedWorks) {
     throw new Error(
-      `collector registry too small: works=${registry.size} minimumExpectedWorks=${minimumExpectedWorks} previousWorks=${existingStates.size}`,
+      `collector registry too small: works=${registry.size} minimumExpectedWorks=${minimumExpectedWorks} maximumFetchableItems=${maximumFetchableItems} previousWorks=${existingStates.size}`,
     )
   }
 
@@ -137,6 +143,7 @@ async function main() {
       capturedAt,
       works: registry.size,
       previousWorks: existingStates.size,
+      maximumFetchableItems,
       minimumExpectedWorks,
       snapshotWrites,
       floorFetchStats,

@@ -16,7 +16,10 @@ export const onRequestGet: PagesFunction = async (context) => {
     const sql = createDb(getDatabaseUrl(context))
     const rows = await listTrackedWorks(sql)
     const works = rows.map(toCatalogWork)
-    const updatedAt = rows.reduce((latest, row) => (row.updated_at > latest ? row.updated_at : latest), "")
+    const updatedAt = rows.reduce<string | null>(
+      (latest, row) => (latest == null || row.updated_at > latest ? row.updated_at : latest),
+      null,
+    )
     const featured = works
       .filter((work) => work.badge != null)
       .sort((left, right) => {

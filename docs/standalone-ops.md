@@ -25,6 +25,7 @@ npm run test:live
 npm run migrate
 npm run collect:history
 npm run build
+npm run test:public-qa
 ```
 
 ## local preview
@@ -45,6 +46,12 @@ npm run preview:pages
 標準URL:
 
 - `http://127.0.0.1:4310`
+
+公開面QA:
+
+```bash
+npm run test:public-qa
+```
 
 ## required GitHub secrets
 
@@ -86,16 +93,19 @@ Pages project: `dmm-seli`
 - `DATABASE_URL` が GitHub secrets と Pages secrets の両方に入っている
 - `collect-price-history` が成功している
 - `deploy-cloudflare-pages` が成功している
+- `npm run test:public-qa` が成功している
 
-## deploy blocker memo
+## monitoring
 
-- failed runs: `24553853656`, `24555466221`, `24555692629`
-- error: `Authentication error [code: 10000]`
-- failed API: `/accounts/.../pages/projects/dmm-seli`
-- action: GitHub secret `CLOUDFLARE_API_TOKEN` を Pages project `dmm-seli` に対して有効な token へ更新する
-- required permission: `Account > Cloudflare Pages > Edit`
-- workflow side: `gitHubToken: ${{ secrets.GITHUB_TOKEN }}` と `deployments: write` を付ける
-- workflow side: `wranglerVersion: "4"` を指定して default install 版に依存しない
+- collector: GitHub Actions の `collect-price-history` と `npm run collect:history` の JSON summary を見る
+- deploy: GitHub Actions の `deploy-cloudflare-pages` と `/api/healthz` の `ok: true` / `db: "ok"` を見る
+- public: `npm run test:public-qa`
+
+## resolved blocker memo
+
+- old failed runs: `24553853656`, `24555466221`, `24555692629`
+- old error: `Authentication error [code: 10000]`
+- status: Cloudflare deploy token is fixed and deploy workflow has recent successful runs
 
 ## do not do
 

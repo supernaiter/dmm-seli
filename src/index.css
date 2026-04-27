@@ -182,6 +182,7 @@ img {
   margin: 10px 0 14px;
   font-size: clamp(2.9rem, 8vw, 5.8rem);
   line-height: 0.92;
+  overflow-wrap: anywhere;
 }
 
 .tracker-lead p,
@@ -393,6 +394,7 @@ img {
 .tracker-cta-note,
 .work-cta-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
@@ -411,6 +413,36 @@ img {
 .work-cta-row span {
   color: var(--muted);
   font-size: 0.86rem;
+}
+
+.work-detail-link,
+.work-dmm-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.work-detail-link {
+  color: var(--muted);
+}
+
+.work-detail-link:hover,
+.work-dmm-link:hover {
+  color: var(--accent-strong);
+}
+
+.work-dmm-link {
+  justify-content: center;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #fff;
+}
+
+.work-dmm-link:hover {
+  color: #fff;
 }
 
 .toolbar-reset {
@@ -554,9 +586,17 @@ img {
   min-width: 0;
 }
 
-.work-tile a {
+.work-cover-link,
+.work-title-link {
   display: block;
-  height: 100%;
+}
+
+.work-cover-link {
+  align-self: start;
+}
+
+.work-title-link:hover h3 {
+  color: var(--accent-strong);
 }
 
 .work-tile figure {
@@ -729,6 +769,7 @@ img {
 .detail-cover {
   overflow: hidden;
   border-radius: 24px;
+  max-width: 100%;
   aspect-ratio: 3 / 4;
   background: linear-gradient(135deg, rgba(174, 79, 36, 0.16), rgba(48, 83, 69, 0.16));
 }
@@ -1009,7 +1050,7 @@ img {
   }
 
   .detail-cover {
-    max-width: 320px;
+    max-width: min(320px, 100%);
   }
 }
 

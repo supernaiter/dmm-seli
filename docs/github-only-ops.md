@@ -34,6 +34,13 @@
 9. Comment result to the issue.
 10. Remove `ready` and `in-progress`, then close issue or mark blocked.
 
+## Monitoring
+
+- collector: confirm the latest `collect-price-history` run and the JSON summary line from `npm run collect:history`.
+- deploy: confirm the latest `deploy-cloudflare-pages` run and `npm run test:cloudflare-deploy` result.
+- public QA: run `npm run test:public-qa` against `https://dmm-seli.pages.dev` or set `QA_BASE_URL` for another Pages URL.
+- failure writeback: record the failing run URL on the relevant GitHub issue, then update `MEMORY.md` for one-off lessons or `POLICY.md` for repeated rules.
+
 ## No ready handoff
 
 - source: `current.txt` goal, `POLICY.md` product priority, `docs/close-criteria.md`
@@ -51,5 +58,4 @@
 
 ## Current blocker
 
-- GitHub Actions deploy needs a valid `CLOUDFLARE_API_TOKEN` for Cloudflare Pages project `dmm-seli`.
-- Until that token exists, deploy workflow work must use `needs-human`, not `ready`.
+- none

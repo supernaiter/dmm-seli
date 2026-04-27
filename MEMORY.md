@@ -10,6 +10,8 @@
 - Consult Pro selected GH-7 as the next `ready` issue: create a real DMM external purchase path before sibling-site traffic work.
 - Cloudflare deploy token was fixed; `deploy-cloudflare-pages` has recent successful runs.
 - Manual deploy is live at `https://dmm-seli.pages.dev`; do not treat collector failure as site-down.
+- Collector fetches at most 800 items per run (4 floors x rank/date x 100). Do not compare the per-run registry size against total historical DB rows.
+- Public QA should check `/`, `/works`, `/api/healthz`, `/api/floors`, `/api/products`, first detail API, and DMM `af_id` before closing traffic/affiliate issues.
 - Use `[skip ci]` on documentation-only or automation-only commits when no deploy verification is needed.
 - `deploy-cloudflare-pages` failure log previously showed `wrangler-action@v3` installed Wrangler `3.90.0` even when `wranglerVersion: "4"` was set; if deploy fails again, confirm actual Wrangler version used in Actions.
 
