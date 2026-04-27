@@ -32,6 +32,18 @@ function describeRecentTrend(current: number | null, historyPrices: number[]) {
   return "直近の中間水準"
 }
 
+function describeSalesStatus(affiliateUrl: string | null, latestPrice: number | null) {
+  if (!affiliateUrl) return "DMMリンク未取得"
+  if (latestPrice == null) return "価格取得待ち"
+  return "DMM掲載中"
+}
+
+function describePriceBenefits(discountPct: number | null, pointRate: number | null) {
+  const discount = discountPct && discountPct > 0 ? formatDiscount(discountPct) : "割引なし"
+  const points = pointRate && pointRate > 0 ? formatPointRate(pointRate) : "還元なし"
+  return `${discount} / ${points}`
+}
+
 export function WorkDetailPage() {
   const params = useParams()
   const [work, setWork] = useState<WorkDetail | null>(null)
@@ -49,7 +61,19 @@ export function WorkDetailPage() {
   }, [work])
 
   if (error) {
-    return <p className="error-banner">{error}</p>
+    return (
+      <div className="page page-detail">
+        <Link className="back-link" to="/">
+          ← 一覧へ戻る
+        </Link>
+        <div className="error-banner">
+          <span>{error}</span>
+          <Link className="button button--ghost" to="/">
+            一覧へ戻る
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   if (!work) {
@@ -58,18 +82,19 @@ export function WorkDetailPage() {
 
   const latestHistory = work.history[0] ?? null
   const recentHistory = work.history.slice(0, 6)
-  const hasCampaign = work.isOnSale || (work.pointRate ?? 0) > 0
   const historyPrices = work.history.map((point) => point.price)
   const bandPosition = describeBandPosition(work.latestPrice, work.bandMin, work.bandMax)
   const modeGap = describeModeGap(work.latestPrice, work.mode)
   const recentTrend = describeRecentTrend(work.latestPrice, historyPrices)
   const affiliateUrl = toSafeExternalUrl(work.affiliateUrl)
   const tachiyomiUrl = toSafeExternalUrl(work.tachiyomiUrl)
+  const salesStatus = describeSalesStatus(affiliateUrl, work.latestPrice)
   const purchaseReasons = [
-    work.isOnSale ? `${formatDiscount(work.discountPct)} セール中` : null,
+    work.isOnSale && work.discountPct ? `${formatDiscount(work.discountPct)} セール中` : null,
     (work.pointRate ?? 0) > 0 ? `${formatPointRate(work.pointRate)} 付き` : null,
     work.pastLowest != null && work.latestPrice != null && work.latestPrice <= work.pastLowest ? "過去最安水準" : null,
   ].filter(Boolean)
+  const primaryReason = purchaseReasons.length ? purchaseReasons.join(" / ") : "価格監視中"
 
   return (
     <div className="page page-detail">
@@ -94,50 +119,52 @@ export function WorkDetailPage() {
             {work.maker ? ` ・ ${work.maker}` : ""}
           </p>
 
-          <div className="detail-lead-grid">
-            <div className="detail-price-spotlight">
-              <span>いま見る理由</span>
-              <strong>{hasCampaign ? purchaseReasons.join(" / ") : "価格監視中"}</strong>
-              <small>
-                最終取得 {formatUpdatedAt(work.updatedAt)}
-                {latestHistory ? ` / 履歴最新 ${latestHistory.dateLabel}` : ""}
-              </small>
+          <div className="detail-buy-box">
+            <div className="detail-current-price">
+              <span>現在価格</span>
+              <strong>{formatYen(work.latestPrice)}</strong>
+              <small>{describePriceBenefits(work.discountPct, work.pointRate)}</small>
             </div>
-
-            <dl className="detail-mini-stats">
+            <dl className="detail-status-grid">
               <div>
-                <dt>過去最安</dt>
-                <dd>{formatYen(work.pastLowest)}</dd>
+                <dt>実質価格</dt>
+                <dd>{formatYen(work.effectivePrice)}</dd>
               </div>
               <div>
-                <dt>相場帯</dt>
-                <dd>
-                  {formatYen(work.bandMin)} - {formatYen(work.bandMax)}
-                </dd>
+                <dt>販売状態</dt>
+                <dd>{salesStatus}</dd>
               </div>
               <div>
-                <dt>よくある価格</dt>
-                <dd>{formatYen(work.mode)}</dd>
+                <dt>最終取得</dt>
+                <dd>{formatUpdatedAt(work.updatedAt)}</dd>
               </div>
             </dl>
           </div>
 
+          <div className="detail-price-spotlight">
+            <span>いま見る理由</span>
+            <strong>{primaryReason}</strong>
+            <small>{latestHistory ? `履歴最新 ${latestHistory.dateLabel}` : "価格履歴は次回収集待ち"}</small>
+          </div>
+
           <dl className="price-panel">
-            <div>
-              <dt>現在価格</dt>
-              <dd>{formatYen(work.latestPrice)}</dd>
-            </div>
             <div>
               <dt>定価</dt>
               <dd>{formatYen(work.listPrice)}</dd>
             </div>
             <div>
-              <dt>ポイント</dt>
-              <dd>{formatPointRate(work.pointRate)}</dd>
+              <dt>過去最安</dt>
+              <dd>{formatYen(work.pastLowest)}</dd>
             </div>
             <div>
-              <dt>実質価格</dt>
-              <dd>{formatYen(work.effectivePrice)}</dd>
+              <dt>相場帯</dt>
+              <dd>
+                {formatYen(work.bandMin)} - {formatYen(work.bandMax)}
+              </dd>
+            </div>
+            <div>
+              <dt>よくある価格</dt>
+              <dd>{formatYen(work.mode)}</dd>
             </div>
           </dl>
 
@@ -158,7 +185,7 @@ export function WorkDetailPage() {
             <Link className="button button--ghost" to="/works">
               一覧へ戻る
             </Link>
-            <span>一覧比較 → この画面で理由確認 → DMM 送客の順で見られます。</span>
+            <span>一覧比較 → 理由確認 → DMMへ進む</span>
           </div>
         </div>
       </section>

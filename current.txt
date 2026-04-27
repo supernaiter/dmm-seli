@@ -31,7 +31,7 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - linear_setup: frozen_reference_only
 - github_sot: issues=source_of_truth, policy=`POLICY.md`, memory=`MEMORY.md`, commits=implementation_facts, ci=verification_facts
 - automation: impl=`dmm-seli-github-implementation` hourly ACTIVE, reflect=`dmm-seli-github-reflection` daily ACTIVE, ready=`ready`, claim=`in-progress`
-- autopilot_last_run: 2026-04-27T09:02:09+09:00 GH-10 closed, GH-11 ready
+- autopilot_last_run: 2026-04-27T10:03:10+09:00 GH-11 closed
 - close_criteria: tracker_natural/detail_natural,fresh_data_no_broken_paths,natural_affiliate_cta,sibling_site_ready
 - issue_priority: FDS-137,FDS-138,FDS-139,FDS-140,FDS-141,FDS-142,FDS-143,FDS-145,FDS-144
 - close_strategy: kinseri_like_ui_first, kinseri_full_copy_first, stable_live_data, affiliate_revenue_path, sibling_link_readiness, review_then_trim_noise
@@ -43,5 +43,6 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - done: [GH-10] 北極星から GitHub backlog を投入し、最優先issueを `ready` 化
 - done: [GH-10] `/` 日本語導線/最終更新/失敗時表示を整備（3fb5e31）
 - done: [GH-5] 既存未コミット変更を回収して commit/push（6bbc530）
-- next: [GH-11] を実装し、検証して main へ commit/push
+- done: [GH-11] `/works/:workId` 価格/状態/履歴導線を整備
+- next: [GH-000] 次回 ready issue を GitHub から選定
 - blockers: [GH-1] Cloudflare Pages token（GitHub secret `CLOUDFLARE_API_TOKEN`）
