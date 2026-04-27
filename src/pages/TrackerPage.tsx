@@ -45,24 +45,36 @@ export function TrackerPage() {
   }, [])
 
   useEffect(() => {
-    setLoadingList(true)
-    loadProducts({
-      floor,
-      q: deferredKeyword || null,
-      sort,
-      sale: saleOnly,
-      limit: 1000,
-      offset: 0,
-    })
-      .then((items) => {
+    let cancelled = false
+
+    async function loadList() {
+      setLoadingList(true)
+      try {
+        const items = await loadProducts({
+          floor,
+          q: deferredKeyword || null,
+          sort,
+          sale: saleOnly,
+          limit: 1000,
+          offset: 0,
+        })
+        if (cancelled) return
         setWorks(items)
         setError(null)
-      })
-      .catch((loadError: Error) => {
+      } catch (loadError) {
+        if (cancelled) return
         console.error(loadError)
         setError("データの読み込みに失敗しました。時間をおいて再読み込みしてください。")
-      })
-      .finally(() => setLoadingList(false))
+      } finally {
+        if (!cancelled) setLoadingList(false)
+      }
+    }
+
+    void loadList()
+
+    return () => {
+      cancelled = true
+    }
   }, [deferredKeyword, floor, saleOnly, sort])
 
   function patchSearch(next: Record<string, string | null>) {
