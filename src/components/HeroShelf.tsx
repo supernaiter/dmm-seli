@@ -18,7 +18,7 @@ export function HeroShelf({ works }: HeroShelfProps) {
   const rows = chunk(covers, 4)
 
   if (!covers.length) {
-    return <div className="hero-shelf hero-shelf--empty">DMM API から表紙取得後にここへ並びます。</div>
+    return <div className="hero-shelf hero-shelf--empty">データ取得後に表紙がここへ並びます。</div>
   }
 
   return (

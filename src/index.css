@@ -702,6 +702,7 @@ img {
   color: var(--accent-strong);
 }
 
+.error-banner,
 .empty-state {
   display: flex;
   align-items: center;

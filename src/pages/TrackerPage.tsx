@@ -38,7 +38,10 @@ export function TrackerPage() {
         setPopular(popularItems)
         setFresh(freshItems)
       })
-      .catch((loadError: Error) => setError(loadError.message))
+      .catch((loadError: Error) => {
+        console.error(loadError)
+        setError("データの読み込みに失敗しました。時間をおいて再読み込みしてください。")
+      })
   }, [])
 
   useEffect(() => {
@@ -55,7 +58,10 @@ export function TrackerPage() {
         setWorks(items)
         setError(null)
       })
-      .catch((loadError: Error) => setError(loadError.message))
+      .catch((loadError: Error) => {
+        console.error(loadError)
+        setError("データの読み込みに失敗しました。時間をおいて再読み込みしてください。")
+      })
       .finally(() => setLoadingList(false))
   }, [deferredKeyword, floor, saleOnly, sort])
 
@@ -88,7 +94,7 @@ export function TrackerPage() {
       <section className="tracker-lead">
         <div className="tracker-lead-copy">
           <div>
-            <p className="hero-eyebrow">Kinseri-flavored tracker</p>
+            <p className="hero-eyebrow">キンセリ風 価格トラッカー</p>
             <h1>dmm-seli</h1>
             <p>
               DMM.com ebook 4フロアを、一覧主導で追うための価格トラッカーです。値動きが大きい作品、人気作品、新着作品を
@@ -141,7 +147,7 @@ export function TrackerPage() {
       <section className="tracker-rails">
         <article id="featured">
           <div className="section-head">
-            <p className="section-eyebrow">Featured</p>
+            <p className="section-eyebrow">注目</p>
             <h2>注目値動き</h2>
           </div>
           <div className="rail-grid">
@@ -153,7 +159,7 @@ export function TrackerPage() {
 
         <article id="popular">
           <div className="section-head">
-            <p className="section-eyebrow">Popular</p>
+            <p className="section-eyebrow">人気</p>
             <h2>人気作品</h2>
           </div>
           <div className="rail-grid">
@@ -165,7 +171,7 @@ export function TrackerPage() {
 
         <article id="fresh">
           <div className="section-head">
-            <p className="section-eyebrow">Fresh</p>
+            <p className="section-eyebrow">新着</p>
             <h2>新着作品</h2>
           </div>
           <div className="rail-grid">
@@ -179,10 +185,14 @@ export function TrackerPage() {
       <section className="tracker-toolbar" id="tracker-list">
         <div className="tracker-toolbar__top">
           <div className="toolbar-copy">
-            <p className="section-eyebrow">Tracker List</p>
+            <p className="section-eyebrow">一覧</p>
             <h2>追跡一覧</h2>
           </div>
           <div className="toolbar-summary-card">
+            <div className="toolbar-updated">
+              <span>最終更新</span>
+              <strong>{floors ? formatUpdatedAt(floors.updatedAt) : "..."}</strong>
+            </div>
             <div className="toolbar-updated">
               <span>表示件数</span>
               <strong>{loadingList ? "..." : `${works.length}件`}</strong>
@@ -260,14 +270,14 @@ export function TrackerPage() {
                   onClick={() => patchSearch({ density: "dense" })}
                   type="button"
                 >
-                  密
+                  密表示
                 </button>
                 <button
                   className={density === "wide" ? "is-active" : ""}
                   onClick={() => patchSearch({ density: null })}
                   type="button"
                 >
-                  広
+                  広表示
                 </button>
               </div>
             </div>
@@ -275,7 +285,14 @@ export function TrackerPage() {
         </div>
       </section>
 
-      {error ? <p className="error-banner">{error}</p> : null}
+      {error ? (
+        <div className="error-banner">
+          <span>{error}</span>
+          <button className="button button--ghost" onClick={() => window.location.reload()} type="button">
+            再読み込み
+          </button>
+        </div>
+      ) : null}
 
       <section className={`works-grid works-grid--${density}`}>
         {works.map((work) => (
