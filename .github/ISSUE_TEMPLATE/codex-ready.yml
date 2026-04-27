@@ -1,0 +1,53 @@
+name: Codex Ready Issue
+description: Work item with enough contract for Codex automation
+title: ""
+labels: ["ready"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What outcome should exist after this issue is complete?
+      placeholder: Describe the end state.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance
+      description: Observable conditions that prove this issue is done.
+      placeholder: List concrete done conditions.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Files, areas, or behaviors Codex may change.
+      placeholder: List allowed files or areas.
+    validations:
+      required: true
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: Work that must not be included.
+      placeholder: List explicit exclusions.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: Deterministic checks Codex should run.
+      placeholder: List commands or manual checks.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety
+      description: Credentials, deploy, data, staging, or rollback constraints.
+      placeholder: List safety limits.
+    validations:
+      required: true

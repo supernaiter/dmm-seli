@@ -1,6 +1,5 @@
 project: dmm-seli
-updated: 2026-04-27
-
+updated: 2026-04-27T15:30:00+09:00
 goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリから兄弟サイト/リンク導線を得る
 
 [STATUS]
@@ -30,21 +29,21 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - linear_project: `DMM.com 電子書籍価格トラッカー v1` `e391ae7a-40fa-47bf-991b-0ce32b74e293`
 - linear_setup: frozen_reference_only
 - github_sot: issues=source_of_truth, policy=`POLICY.md`, memory=`MEMORY.md`, commits=implementation_facts, ci=verification_facts
-- automation: impl=`dmm-seli-github-implementation` hourly ACTIVE_WITH_GH-7_READY, pro=`dmm-seli-consult-pro-roadmap`, ready=`ready`, claim=`in-progress`
-- autopilot_last_run: 2026-04-27T11:41:54+09:00 GH-6,GH-7,GH-8,GH-9,GH-12 resolving
+- automation: impl=`dmm-seli-github-implementation` hourly PAUSED_NO_READY, pro=`dmm-seli-consult-pro-roadmap`, ready=`ready`, claim=`in-progress`
+- autopilot_last_run: 2026-04-27T15:30:00+09:00 GH-13 complete
 - close_criteria: tracker_natural/detail_natural,fresh_data_no_broken_paths,natural_affiliate_cta,sibling_site_ready
-- issue_priority: GH-7,GH-8,GH-12,GH-6,GH-9
+- issue_priority: none_open_after_current_run
 - close_strategy: valid_dmm_external_click, sibling_link_readiness, stable_live_data, review_then_trim_noise
 - close_non_goals: unique_branding, extra_features, ci_deploy_perfection_before_ui_fit, blind_copy_of_obvious_redundancy
 - local_verify: `/api/healthz` ok, `/api/products` ok, `/api/products/:workId` ok, `/` ok, `/works` ok
 - verify: `npm run lint` ok, `npm run build` ok, `npm run test:live` ok, `npm run test:public-qa` ok, local_browser_cta ok
 - done: [GH-000] GitHub-only SoT 用 `POLICY.md` / `MEMORY.md` / ops doc を追加
-- done: [GH-1] Cloudflare Pages token更新 issue を reopen し `needs-human` + `blocked` を付与
 - done: [GH-10] 北極星から GitHub backlog を投入し、最優先issueを `ready` 化
 - done: [GH-10] `/` 日本語導線/最終更新/失敗時表示を整備（3fb5e31）
 - done: [GH-5] 既存未コミット変更を回収して commit/push（6bbc530）
 - done: [GH-11] `/works/:workId` 価格/状態/履歴導線を整備
 - done: [GH-7] 一覧カードにDMM直リンクCTAを追加し、詳細CTAのaffiliate URLを確認
+- done: [GH-13] `AGENTS.md` / `CLAUDE.md` / issue template を追加
 - consult_pro: 2026-04-27 GH-7→GH-8→GH-12→GH-6, GH-7は公式/取得済みaffiliateUrl優先
-- next: [GH-7] issue反映/close
+- next: [GH-000] consult-pro/roadmap判断待ち
 - blockers: none

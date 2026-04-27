@@ -14,12 +14,15 @@
 - Public QA should check `/`, `/works`, `/api/healthz`, `/api/floors`, `/api/products`, first detail API, and DMM `af_id` before closing traffic/affiliate issues.
 - Use `[skip ci]` on documentation-only or automation-only commits when no deploy verification is needed.
 - `deploy-cloudflare-pages` failure log previously showed `wrangler-action@v3` installed Wrangler `3.90.0` even when `wranglerVersion: "4"` was set; if deploy fails again, confirm actual Wrangler version used in Actions.
+- On 2026-04-27, GH-13 filled the remaining GitHub-only operation files: `AGENTS.md`, `CLAUDE.md`, and `.github/ISSUE_TEMPLATE/codex-ready.yml`.
+- The repo can have local non-issue artifacts like `.playwright-mcp/` and `dmm-seli-live-publish-ready.png`; do not stage them unless an issue explicitly scopes them.
 
 ## Repeat checks
 
 - Before automation work, confirm exactly one `ready` GitHub issue is selected.
 - For deploy work, verify `/api/healthz` response body has `ok: true` and `db: "ok"`.
 - Keep `current.txt` under 50 lines and use key-value or bullets only.
+- Before final response, check whether `MEMORY.md` needs a small lesson update; this is part of the repo rule, not optional polish.
 
 ## Promotion candidates
 
