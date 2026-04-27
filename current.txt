@@ -1,5 +1,5 @@
 project: dmm-seli
-updated: 2026-04-27T15:30:00+09:00
+updated: 2026-04-27T15:46:00+09:00
 goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリから兄弟サイト/リンク導線を得る
 
 [STATUS]
@@ -30,7 +30,7 @@ goal: DMM.com 電子書籍価格トラッカーを収益化し、キンセリか
 - linear_setup: frozen_reference_only
 - github_sot: issues=source_of_truth, policy=`POLICY.md`, memory=`MEMORY.md`, commits=implementation_facts, ci=verification_facts
 - automation: impl=`dmm-seli-github-implementation` hourly PAUSED_NO_READY, pro=`dmm-seli-consult-pro-roadmap`, ready=`ready`, claim=`in-progress`
-- autopilot_last_run: 2026-04-27T15:30:00+09:00 GH-13 complete
+- autopilot_last_run: 2026-04-27T15:46:00+09:00 GH-000 no_ready
 - close_criteria: tracker_natural/detail_natural,fresh_data_no_broken_paths,natural_affiliate_cta,sibling_site_ready
 - issue_priority: none_open_after_current_run
 - close_strategy: valid_dmm_external_click, sibling_link_readiness, stable_live_data, review_then_trim_noise
