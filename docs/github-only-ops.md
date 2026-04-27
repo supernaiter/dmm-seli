@@ -24,7 +24,7 @@
 ## Automation loop
 
 1. Query open issues with `ready`.
-2. If none exist, seed missing issues from the north star and close criteria, then mark the next issue `ready`.
+2. If none exist, pause implementation automation and hand off to Consult Pro / roadmap automation.
 3. Skip issues with `in-progress`, `blocked`, `needs-contract`, `needs-human`, or `no-autopilot`.
 4. Pick one issue only and add `in-progress`.
 5. Read `POLICY.md`, `MEMORY.md`, `current.txt`, and the issue.
@@ -34,11 +34,12 @@
 9. Comment result to the issue.
 10. Remove `ready` and `in-progress`, then close issue or mark blocked.
 
-## Backlog seed
+## No ready handoff
 
 - source: `current.txt` goal, `POLICY.md` product priority, `docs/close-criteria.md`
-- action: create concrete GitHub issues with `Goal` and `Acceptance`
-- ready: exactly one next issue
+- action: pause `dmm-seli-github-implementation`
+- consult: ask Pro for blocker removal, roadmap order, or north-star update
+- ready: only after a concrete issue is selected by roadmap judgment
 - forbidden: implementation, deploy, publish, secret rotation
 
 ## Reflection loop

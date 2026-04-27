@@ -6,11 +6,12 @@
 - `autopilot-ready` in Linear stalled the runner because no issue had the label. GitHub uses the shorter `ready` label.
 - GitHub automation now has a reusable global skill: `/Users/naoki/.codex/skills/workspace-autopilot-github/SKILL.md`.
 - Add `in-progress` during each automation run to avoid duplicate issue ownership.
-- If no `ready` issue exists, the automation must seed/promote the next issue from the north star instead of waiting for a human.
-- Cloudflare deploy workflow is blocked by `CLOUDFLARE_API_TOKEN` auth error 10000. The required fix is a token that can read/edit Pages project `dmm-seli`.
-- Manual deploy is live at `https://dmm-seli.pages.dev`; do not treat deploy workflow failure as site-down.
-- While deploy is blocked, `[skip ci]` on doc-only/automation-only commits prevents `deploy-cloudflare-pages` runs on push and avoids noise.
-- `deploy-cloudflare-pages` failure log shows `wrangler-action@v3` installed Wrangler `3.90.0` even when `wranglerVersion: "4"` is set; if deploy still fails after token fix, confirm actual Wrangler version used in Actions.
+- If no `ready` issue exists, implementation automation must pause and hand off to Consult Pro for roadmap/blocker judgment.
+- Consult Pro selected GH-7 as the next `ready` issue: create a real DMM external purchase path before sibling-site traffic work.
+- Cloudflare deploy token was fixed; `deploy-cloudflare-pages` has recent successful runs.
+- Manual deploy is live at `https://dmm-seli.pages.dev`; do not treat collector failure as site-down.
+- Use `[skip ci]` on documentation-only or automation-only commits when no deploy verification is needed.
+- `deploy-cloudflare-pages` failure log previously showed `wrangler-action@v3` installed Wrangler `3.90.0` even when `wranglerVersion: "4"` was set; if deploy fails again, confirm actual Wrangler version used in Actions.
 
 ## Repeat checks
 
